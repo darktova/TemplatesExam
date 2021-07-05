@@ -10,55 +10,53 @@ public:
 	int getBadIndex() const { return index; }
 };
 
-class OutOfRange
-{
-private:
-	int index;
+class OutOfRange {};
 
-public:
-	OutOfRange(int i) { index = i; }
-	int getOutOfRange() const { return index; }
-};
-
-
-template <class T, int n = 255>
+template <class T, int n = 256>
 class Array
 {
-	T* arrPtr; // Dynamic member
+	T arr[n];
 	int cnt; // Current number of elements
 
 public:
 	// Constructors
-	Array<T, n>()
-		: arrPtr(new T[n]), cnt(0) {};
-	Array<T, n>(T init_val)
-		: arrPtr(new T[n]), cnt(n)
-	{
-		for (int i = 0; i < cnt; ++i)
-			arrPtr[i] = init_val;
-	};
+	Array<T, n>() : cnt(0) {};
+	Array<T, n>(int n, const T& init_val);
+
 	// Access methods
 	int size() const { return n; };
 	int lenght() const { return cnt; };
 
+	Array& operator+=(float val) throw(OutOfRange)
+	{
+		append(val); return *this;
+	}
+	Array& operator+=(const Array& v) throw(OutOfRange)
+	{
+		append(v); return *this;
+	}
+	void append(T val) throw(OutOfRange);
+	void append(const Array& v) throw(OutOfRange);
+
 	// Insert and delete methods
-	void insert(const T& v, int pos) throw(BadIndex, OutOfRange);
+	void insert(T v, int pos) throw(BadIndex, OutOfRange);
+	void insert(const Array<T, n>& v, int pos) throw(BadIndex, OutOfRange);
 	void remove(int pos) throw(BadIndex);
 
 	// Index operator
-	float& operator[](int i) throw(BadIndex);
-	float operator[](int i) const throw(BadIndex);
+	const T& operator[](int i) throw(BadIndex)
+	{
+		if (i < 0 || i >= cnt) throw BadIndex(i);
+		return arr[i];
+	}
+
+	T operator[](int i) const throw(BadIndex)
+	{
+		if (i < 0 || i >= cnt) throw BadIndex(i);
+		return arr[i];
+	}
 
 	// Output the array
 	friend std::ostream& operator<<(std::ostream& os,
-		const Array& v)
-	{
-		int w = os.width(); // Save field width.
-		for (T* p = v.arrPtr; p < v.arrPtr + v.cnt; ++p)
-		{
-			os.width(w); os << *p << ' ';
-		}
-		return os;
-	}
-
+		const Array& v);
 };

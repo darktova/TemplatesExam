@@ -39,7 +39,7 @@ int main()
 	Array<double, v1_size> arr1;
 	Array<short, v2_size> arr2;
 
-	const Array<double, 1> tmp(v1[0]);
+	const Array<double, 1> tmp(1, v1[0]);
 
 	// Insert data into arrays
 	arr1.insert(*v1, 0);
